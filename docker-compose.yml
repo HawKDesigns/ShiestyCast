@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  stream-converter:
+    build: .
+    ports:
+      - "9090:9090"
+      - "5000:5000"
+    environment:
+      - STREAMS_FILE=/var/www/hls/streams.json
+    volumes:
+      - ./hls:/var/www/hls
+      - ./streamdata:/var/www/streamdata
+    restart: unless-stopped 

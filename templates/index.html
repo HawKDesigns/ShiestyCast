@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Stream Converter Setup</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Manage Streams</h1>
+
+    <h2>Add New Stream</h2>
+    <form method="POST" action="/" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="add">
+        <label for="name">Stream Name:</label><br>
+        <input type="text" id="name" name="name" required style="width: 400px;"><br><br>
+        
+        <label for="source_url">Source URL:</label><br>
+        <input type="url" id="source_url" name="source_url" required style="width: 400px;"><br><br>
+        
+        <label for="output_path">Output Path:</label><br>
+        <input type="text" id="output_path" name="output_path" required placeholder="/my/folder/customname.m3u8" style="width: 400px;"><br><br>
+
+        <label for="logo">Upload Logo (PNG/SVG):</label><br>
+        <input type="file" id="logo" name="logo" accept=".png,.svg"><br><br>
+        
+        <input type="submit" value="Add Stream">
+    </form>
+
+    <h2>Existing Streams</h2>
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Source URL</th>
+            <th>Output Path</th>
+            <th>Logo</th>
+            <th>Actions</th>
+        </tr>
+        {% for stream in streams %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ stream.name }}</td>
+            <td>{{ stream.source_url }}</td>
+            <td>{{ stream.output_path }}</td>
+            <td>
+                {% if stream.logo %}
+                    <img src="{{ stream.logo }}" alt="{{ stream.name }} Logo" width="50">
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                <form method="POST" action="/" style="display:inline;" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="edit">
+                    <input type="hidden" name="index" value="{{ loop.index0 }}">
+                    <input type="text" name="name" value="{{ stream.name }}" required style="width: 200px;">
+                    <input type="url" name="source_url" value="{{ stream.source_url }}" required style="width: 300px;">
+                    <input type="text" name="output_path" value="{{ stream.output_path }}" required style="width: 300px;">
+                    <input type="file" name="logo" accept=".png,.svg">
+                    <input type="submit" value="Update" onclick="return confirm('Are you sure you want to update this stream?');">
+                </form>
+                <form method="POST" action="/" style="display:inline;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="index" value="{{ loop.index0 }}">
+                    <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this stream?');">
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html> 
